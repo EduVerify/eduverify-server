@@ -1,8 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { Logger } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { registerGlobal } from './utils/register_global';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
-}
-bootstrap();
+(async () => {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    snapshot: true,
+    rawBody: true,
+  });
+
+  await registerGlobal(app, async (url) => {
+    Logger.log(`Application is running on: ${url}`, 'NestApplication');
+  });
+})();
