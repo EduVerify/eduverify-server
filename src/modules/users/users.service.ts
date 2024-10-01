@@ -23,6 +23,21 @@ export class UsersService {
     return await this.usersRepository.findOne({ where: { id } });
   }
 
+  getMe(userId: number) {
+    return this.usersRepository.findOne({
+      where: { id: userId },
+      select: [
+        'id',
+        'email',
+        'first_name',
+        'last_name',
+        'phone',
+        'picture',
+        'role',
+      ],
+    });
+  }
+
   async create(createUserDto: CreateUserDto) {
     return await this.usersRepository.save(
       this.usersRepository.create(createUserDto),

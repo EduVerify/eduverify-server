@@ -9,10 +9,7 @@ export async function registerGlobal(
   const configService = app.get(ConfigService<IConfigService>);
   const PORT = parseInt(configService.get<string>('APP_PORT'));
   const HOSTNAME = configService.get<string>('APP_HOSTNAME');
-  // app.enableCors({
-  //   origin: [FRONT_URL, LOCAL_BACKEND_API, FRONT_URL_RENDER, BACKEND_API],
-  //   credentials: true,
-  // });
+  app.enableCors({ origin: '*' });
   app.setGlobalPrefix('api');
   // app.useGlobalInterceptors(new ResponseInterceptor());
   // app.useGlobalPipes(new ValidationPipe());
