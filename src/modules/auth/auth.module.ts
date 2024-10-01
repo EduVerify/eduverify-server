@@ -6,9 +6,12 @@ import { JwtStrategy } from './jwt.strategy';
 import { Module } from '@nestjs/common';
 import { JWT_SECRET_KEY } from 'src/config/constants';
 import { AuthService } from './auth.service';
+import { UsersModule } from '../users/users.module';
+import { LocalStrategy } from './local.strategy';
 
 @Module({
   imports: [
+    UsersModule,
     PassportModule,
     JwtModule.register({
       global: true,
@@ -18,7 +21,7 @@ import { AuthService } from './auth.service';
       },
     }),
   ],
-  providers: [AuthService, JwtStrategy, GoogleStrategy],
+  providers: [AuthService, JwtStrategy, GoogleStrategy, LocalStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}

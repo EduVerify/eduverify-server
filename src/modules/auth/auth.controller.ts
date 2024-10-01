@@ -14,6 +14,8 @@ import { JwtService } from '@nestjs/jwt';
 import { FRONT_URL } from 'src/config/constants';
 import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
+import { CreateUserDto } from '../users/dtos/create_user.dto';
+import { LocalAuthGuard } from 'src/guards/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -22,42 +24,18 @@ export class AuthController {
     private authService: AuthService,
   ) {}
 
-  // @UseGuards(LocalAuthGuard)
-  // @HttpCode(200)
-  // @Post('login')
-  // async login(@Req() req) {
-  //   return this.authService.login(req.user);
-  // }
+  @UseGuards(LocalAuthGuard)
+  @HttpCode(200)
+  @Post('login')
+  async login(@Req() req) {
+    return this.authService.login(req.user);
+  }
 
-  // @Post('register')
-  // @HttpCode(200)
-  // async register(@Body() createUserDto: CreateUserDto) {
-  //   return this.authService.register(createUserDto);
-  // }
-
-  // @Post('send_verification_email')
-  // @HttpCode(200)
-  // async sendVerificationEmail(@Body('email') email: string) {
-  //   return await this.authService.sendEmail(email);
-  // }
-
-  // @Get('facebook')
-  // @UseGuards(oauth.AuthGuard('facebook'))
-  // async facebookLogin(): Promise<any> {
-  //   return HttpStatus.OK;
-  // }
-
-  // @Get('/facebook/redirect')
-  // @UseGuards(oauth.AuthGuard('facebook'))
-  // async facebookLoginRedirect(
-  //   @Req() req: Request,
-  //   @Res() res: Response,
-  // ): Promise<any> {
-  //   const { access_token } = await this.authService.conectionWithSocialNet(
-  //     req.user,
-  //   );
-  //   res.redirect(FRONT_URL + '?token=' + access_token);
-  // }
+  @Post('register')
+  @HttpCode(200)
+  async register(@Body() createUserDto: CreateUserDto) {
+    return this.authService.register(createUserDto);
+  }
 
   @Get('google')
   @UseGuards(oauth.AuthGuard('google'))
@@ -71,7 +49,22 @@ export class AuthController {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<any> {
-    const token = this.authService.generateJwt(req.user);
-    res.redirect(FRONT_URL + 'VerifyToken?token=' + token);
+    const { access_token, first_name, last_name, picture, role, email } =
+      await this.authService.conectionWithSocialNet(req.user);
+    res.redirect(
+      FRONT_URL +
+        '?oauth=google&token=' +
+        access_token +
+        '&first_name=' +
+        first_name +
+        '&last_name=' +
+        last_name +
+        '&picture=' +
+        picture +
+        '&role=' +
+        role +
+        '&email=' +
+        email,
+    );
   }
 }
