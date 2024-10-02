@@ -12,6 +12,9 @@ export class Users {
   @Column('varchar')
   last_name: string;
 
+  @Column('varchar', { nullable: true })
+  username: string;
+
   @Column('varchar')
   email: string;
 

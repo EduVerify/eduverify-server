@@ -4,6 +4,7 @@ import { Users } from 'src/entities/users.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dtos/create_user.dto';
 import { CreateUserNetworkDto } from './dtos/create_user_network.dto';
+import { UpdateUserDto } from './dtos/update_user.dto';
 
 @Injectable()
 export class UsersService {
@@ -33,6 +34,7 @@ export class UsersService {
         'last_name',
         'phone',
         'picture',
+        'username',
         'role',
       ],
     });
@@ -44,6 +46,11 @@ export class UsersService {
     );
   }
 
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    await this.usersRepository.update(id, updateUserDto);
+    return await this.usersRepository.findOne({ where: { id } });
+  }
+
   async createSocialAccount(createUserDto: CreateUserNetworkDto) {
     const user = await this.usersRepository.findOne({
       where: {
@@ -53,6 +60,15 @@ export class UsersService {
     if (user) {
       return user;
     } else {
+      const generateRandomUsername = (firstName: string, lastName: string) => {
+        const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+        return `${firstName.toLowerCase()}_${lastName.toLowerCase()}_${randomSuffix}`;
+      };
+
+      createUserDto.username = generateRandomUsername(
+        createUserDto.first_name,
+        createUserDto.last_name,
+      );
       return await this.usersRepository.save(
         this.usersRepository.create(createUserDto),
       );

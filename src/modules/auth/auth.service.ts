@@ -37,6 +37,9 @@ export class AuthService {
       throw new BadRequestException('Cette adresse email est déjà utilisée.');
     }
     const hashedPassword = await bcrypt.hash(userDto.password, 10);
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+    const username = `${userDto.first_name.toLowerCase()}.${userDto.last_name.toLowerCase()}${randomSuffix}`;
+    userDto.username = username;
     const user = await this.usersService.create({
       ...userDto,
       password: hashedPassword,

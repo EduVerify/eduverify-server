@@ -51,6 +51,11 @@ export class AuthController {
   ): Promise<any> {
     const { access_token, first_name, last_name, picture, role, email } =
       await this.authService.conectionWithSocialNet(req.user);
+    const generateRandomUsername = (firstName: string, lastName: string) => {
+      const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+      return `${firstName.toLowerCase()}_${lastName.toLowerCase()}_${randomSuffix}`;
+    };
+    const username = generateRandomUsername(first_name, last_name);
     res.redirect(
       FRONT_URL +
         '?oauth=google&token=' +
@@ -64,7 +69,9 @@ export class AuthController {
         '&role=' +
         role +
         '&email=' +
-        email,
+        email +
+        '&username=' +
+        username,
     );
   }
 }

@@ -18,6 +18,10 @@ export class CreateUserNetworkDto {
   last_name: string;
 
   @IsString()
+  @IsOptional()
+  username: string;
+
+  @IsString()
   @IsNotEmpty()
   social_id: string;
 

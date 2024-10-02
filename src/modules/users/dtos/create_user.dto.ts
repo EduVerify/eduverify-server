@@ -16,6 +16,10 @@ export class CreateUserDto {
   @IsString()
   last_name: string;
 
+  @IsOptional()
+  @IsString()
+  username: string;
+
   @IsNotEmpty()
   @IsPhoneNumber('MA')
   phone: string;
