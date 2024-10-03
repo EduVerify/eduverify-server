@@ -8,11 +8,13 @@ import { JWT_SECRET_KEY } from 'src/config/constants';
 import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
 import { LocalStrategy } from './local.strategy';
+import { MailerModule } from 'src/libs/mailer.module';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
+    MailerModule.register(),
     JwtModule.register({
       global: true,
       secret: JWT_SECRET_KEY,

@@ -1,4 +1,4 @@
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { IConfigService } from 'src/types/interfaces';
 
@@ -12,7 +12,7 @@ export async function registerGlobal(
   app.enableCors({ origin: '*' });
   app.setGlobalPrefix('api');
   // app.useGlobalInterceptors(new ResponseInterceptor());
-  // app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe());
   await app.listen(PORT, HOSTNAME, async () =>
     callback((await app.getUrl()) + '/api'),
   );

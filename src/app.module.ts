@@ -7,6 +7,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { IConfigService } from './types/interfaces';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
@@ -29,6 +30,24 @@ import { UsersModule } from './modules/users/users.module';
         };
         return options;
       },
+      inject: [ConfigService],
+    }),
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService<IConfigService>) => ({
+        transport: {
+          host: configService.get<string>('MAILER_HOST'),
+          port: configService.get<number>('MAILER_PORT'),
+          secure: false, // use TLS
+          auth: {
+            user: configService.get<string>('MAILER_USER'),
+            pass: configService.get<string>('MAILER_PASS'),
+          },
+        },
+        defaults: {
+          from: `"No Reply" <${configService.get<string>('MAILER_USER')}>`,
+        },
+      }),
       inject: [ConfigService],
     }),
     AuthModule,

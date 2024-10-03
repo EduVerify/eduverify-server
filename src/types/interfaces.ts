@@ -7,4 +7,8 @@ export interface IConfigService {
   APP_PORT: string;
   APP_HOSTNAME: string;
   JWT_SECRET: string;
+  MAILER_HOST: string;
+  MAILER_PORT: number;
+  MAILER_USER: string;
+  MAILER_PASS: string;
 }

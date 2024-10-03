@@ -4,12 +4,15 @@ import { UsersService } from '../users/users.service';
 import { JwtPayload } from './jwt-payload.interface';
 import { CreateUserDto } from '../users/dtos/create_user.dto';
 import * as bcrypt from 'bcrypt';
+import { MailService } from 'src/libs/mailer.service';
+import { FRONT_URL } from 'src/config/constants';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private mailService: MailService,
   ) {}
 
   async validateUser(email: string, pass: string): Promise<any> {
@@ -26,8 +29,10 @@ export class AuthService {
 
   async login(user: any) {
     const payload: JwtPayload = { email: user.email, id: user.id };
+    const userData = await this.usersService.getMe(user.id);
     return {
       access_token: this.jwtService.sign(payload),
+      user: userData,
     };
   }
 
@@ -45,9 +50,32 @@ export class AuthService {
       password: hashedPassword,
     });
     const payload: JwtPayload = { email: user.email, id: user.id };
-    return {
+    const data = {
       access_token: this.jwtService.sign(payload),
+      first_name: user.first_name,
+      last_name: user.last_name,
+      role: user.role,
+      phone: user.phone,
+      email: user.email,
     };
+    const url =
+      FRONT_URL +
+      '?oauth=email&token=' +
+      data.access_token +
+      '&first_name=' +
+      data.first_name +
+      '&last_name=' +
+      data.last_name +
+      '&role=' +
+      data.role +
+      '&email=' +
+      data.email +
+      '&username=' +
+      username +
+      '&phone=' +
+      data.phone;
+    await this.mailService.sendConfirmationEmail(user.email, url);
+    return { message: 'Confirmation email sent !' };
   }
   async conectionWithSocialNet(userDto: any) {
     const user = await this.usersService.createSocialAccount(userDto);
