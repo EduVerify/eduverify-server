@@ -74,4 +74,8 @@ export class UsersService {
       );
     }
   }
+
+  async delete(id: number) {
+    return await this.usersRepository.delete(id);
+  }
 }
