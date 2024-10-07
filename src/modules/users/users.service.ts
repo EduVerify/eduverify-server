@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from 'src/entities/users.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dtos/create_user.dto';
 import { CreateUserNetworkDto } from './dtos/create_user_network.dto';
 import { UpdateUserDto } from './dtos/update_user.dto';
-
+import * as bcrypt from 'bcrypt';
+import { UpdatePasswordDto } from './dtos/update_password.dto';
 @Injectable()
 export class UsersService {
   constructor(
@@ -77,5 +78,26 @@ export class UsersService {
 
   async delete(id: number) {
     return await this.usersRepository.delete(id);
+  }
+
+  async updatePassword(id: number, updatePasswordDto: UpdatePasswordDto) {
+    const user = await this.usersRepository.findOne({
+      where: { id },
+      select: ['password'],
+    });
+    if (!updatePasswordDto.isOauth) {
+      const isPasswordValid = await bcrypt.compare(
+        updatePasswordDto.old_password,
+        user.password,
+      );
+      if (!isPasswordValid) {
+        throw new BadRequestException('Invalid password');
+      }
+    }
+    const hashedPassword = await bcrypt.hash(
+      updatePasswordDto.new_password,
+      10,
+    );
+    await this.usersRepository.update(id, { password: hashedPassword });
   }
 }

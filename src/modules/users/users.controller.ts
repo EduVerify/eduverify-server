@@ -4,6 +4,7 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { User } from 'src/decorators/user.decorator';
 import { Users } from 'src/entities/users.entity';
 import { UpdateUserDto } from './dtos/update_user.dto';
+import { UpdatePasswordDto } from './dtos/update_password.dto';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
@@ -18,6 +19,14 @@ export class UsersController {
   @Put('/me')
   updateMe(@User() user: Users, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(user.id, updateUserDto);
+  }
+
+  @Put('/me/password')
+  updatePassword(
+    @User() user: Users,
+    @Body() updatePasswordDto: UpdatePasswordDto,
+  ) {
+    return this.usersService.updatePassword(user.id, updatePasswordDto);
   }
 
   @Delete('/me')
