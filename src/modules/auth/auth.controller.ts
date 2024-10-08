@@ -8,6 +8,8 @@ import {
   HttpStatus,
   Req,
   Res,
+  Put,
+  Param,
 } from '@nestjs/common';
 import * as oauth from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
@@ -16,6 +18,7 @@ import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
 import { CreateUserDto } from '../users/dtos/create_user.dto';
 import { LocalAuthGuard } from 'src/guards/local-auth.guard';
+import { UpdatePasswordDto } from '../users/dtos/update_password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -35,6 +38,21 @@ export class AuthController {
   @HttpCode(200)
   async register(@Body() createUserDto: CreateUserDto) {
     return this.authService.register(createUserDto);
+  }
+
+  @Post('forgot-password')
+  @HttpCode(200)
+  async forgotPassword(@Body() body) {
+    return this.authService.forgotPassword(body.email);
+  }
+
+  @Put('reset-password/:id')
+  @HttpCode(200)
+  async resetPassword(
+    @Body() updatePasswordDto: UpdatePasswordDto,
+    @Param('id') id: number,
+  ) {
+    return this.authService.resetPassword(updatePasswordDto, id);
   }
 
   @Get('google')

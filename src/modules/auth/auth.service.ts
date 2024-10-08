@@ -6,6 +6,7 @@ import { CreateUserDto } from '../users/dtos/create_user.dto';
 import * as bcrypt from 'bcrypt';
 import { MailService } from 'src/libs/mailer.service';
 import { FRONT_URL } from 'src/config/constants';
+import { UpdatePasswordDto } from '../users/dtos/update_password.dto';
 
 @Injectable()
 export class AuthService {
@@ -93,5 +94,20 @@ export class AuthService {
   generateJwt(user: any) {
     const payload = { email: user.email, id: user.id };
     return this.jwtService.sign(payload);
+  }
+
+  async forgotPassword(email: string) {
+    // send email with token
+    const user = await this.usersService.findOne(email);
+    if (!user) {
+      throw new BadRequestException('Email not found');
+    }
+    const token = this.generateJwt(user);
+    const url = `${FRONT_URL}reset-password?token=${token}`;
+    await this.mailService.sendConfirmationEmail(user.email, url);
+  }
+
+  async resetPassword(updatePasswordDto: UpdatePasswordDto, id: number) {
+    await this.usersService.updatePassword(id, updatePasswordDto);
   }
 }

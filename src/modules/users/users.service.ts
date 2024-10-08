@@ -81,19 +81,6 @@ export class UsersService {
   }
 
   async updatePassword(id: number, updatePasswordDto: UpdatePasswordDto) {
-    const user = await this.usersRepository.findOne({
-      where: { id },
-      select: ['password'],
-    });
-    if (!updatePasswordDto.isOauth) {
-      const isPasswordValid = await bcrypt.compare(
-        updatePasswordDto.old_password,
-        user.password,
-      );
-      if (!isPasswordValid) {
-        throw new BadRequestException('Invalid password');
-      }
-    }
     const hashedPassword = await bcrypt.hash(
       updatePasswordDto.new_password,
       10,

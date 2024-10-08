@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { User } from 'src/decorators/user.decorator';
@@ -22,6 +30,7 @@ export class UsersController {
   }
 
   @Put('/me/password')
+  @HttpCode(200)
   updatePassword(
     @User() user: Users,
     @Body() updatePasswordDto: UpdatePasswordDto,
