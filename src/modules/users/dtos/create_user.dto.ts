@@ -1,10 +1,14 @@
 import {
   IsEmail,
+  IsEnum,
   IsNotEmpty,
+  IsObject,
   IsOptional,
   IsString,
   IsStrongPassword,
 } from 'class-validator';
+import { CreateUniversityDto } from 'src/modules/universities/dto/create-university.dto';
+import { authType } from 'src/types/enum';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -26,6 +30,14 @@ export class CreateUserDto {
   @IsOptional()
   @IsEmail()
   email: string;
+
+  @IsOptional()
+  @IsEnum(authType)
+  role: authType;
+
+  @IsOptional()
+  @IsObject()
+  university: CreateUniversityDto;
 
   @IsNotEmpty()
   @IsString()

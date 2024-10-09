@@ -8,6 +8,7 @@ import { IConfigService } from './types/interfaces';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { UniversitiesModule } from './modules/universities/universities.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
     }),
     AuthModule,
     UsersModule,
+    UniversitiesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -13,13 +13,17 @@ import { User } from 'src/decorators/user.decorator';
 import { Users } from 'src/entities/users.entity';
 import { UpdateUserDto } from './dtos/update_user.dto';
 import { UpdatePasswordDto } from './dtos/update_password.dto';
+import { Roles } from 'src/decorators/roles.decorator';
+import { authType } from 'src/types/enum';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @Controller('users')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('/me')
+  @Roles(authType.STUDENT)
   getMe(@User() user: Users) {
     return this.usersService.getMe(user.id);
   }

@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { MailService } from 'src/libs/mailer.service';
 import { FRONT_URL } from 'src/config/constants';
 import { UpdatePasswordDto } from '../users/dtos/update_password.dto';
+import { authType } from 'src/types/enum';
 
 @Injectable()
 export class AuthService {
@@ -29,7 +30,11 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload: JwtPayload = { email: user.email, id: user.id };
+    const payload: JwtPayload = {
+      email: user.email,
+      id: user.id,
+      role: user.role,
+    };
     const userData = await this.usersService.getMe(user.id);
     return {
       access_token: this.jwtService.sign(payload),
@@ -50,7 +55,14 @@ export class AuthService {
       ...userDto,
       password: hashedPassword,
     });
-    const payload: JwtPayload = { email: user.email, id: user.id };
+    if (userDto.role === authType.SCHOOL) {
+      await this.usersService.createUniversity(userDto.university, user);
+    }
+    const payload: JwtPayload = {
+      email: user.email,
+      id: user.id,
+      role: user.role,
+    };
     const data = {
       access_token: this.jwtService.sign(payload),
       first_name: user.first_name,
@@ -80,7 +92,11 @@ export class AuthService {
   }
   async conectionWithSocialNet(userDto: any) {
     const user = await this.usersService.createSocialAccount(userDto);
-    const payload: JwtPayload = { email: user.email, id: user.id };
+    const payload: JwtPayload = {
+      email: user.email,
+      id: user.id,
+      role: user.role,
+    };
     return {
       access_token: this.jwtService.sign(payload),
       first_name: user.first_name,
@@ -92,7 +108,11 @@ export class AuthService {
   }
 
   generateJwt(user: any) {
-    const payload = { email: user.email, id: user.id };
+    const payload: JwtPayload = {
+      email: user.email,
+      id: user.id,
+      role: user.role,
+    };
     return this.jwtService.sign(payload);
   }
 

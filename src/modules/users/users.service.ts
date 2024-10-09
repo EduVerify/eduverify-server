@@ -7,17 +7,20 @@ import { CreateUserNetworkDto } from './dtos/create_user_network.dto';
 import { UpdateUserDto } from './dtos/update_user.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdatePasswordDto } from './dtos/update_password.dto';
+import { UniversitiesService } from '../universities/universities.service';
+import { CreateUniversityDto } from '../universities/dto/create-university.dto';
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(Users)
     private readonly usersRepository: Repository<Users>,
+    private readonly universitiesService: UniversitiesService,
   ) {}
 
   async findOne(email: string) {
     return await this.usersRepository.findOne({
       where: { email },
-      select: { password: true, email: true, id: true },
+      select: { password: true, email: true, id: true, role: true },
     });
   }
 
@@ -39,6 +42,10 @@ export class UsersService {
         'role',
       ],
     });
+  }
+
+  async createUniversity(createUniversityDto: CreateUniversityDto, user: Users) {
+    return await this.universitiesService.create(createUniversityDto, user);
   }
 
   async create(createUserDto: CreateUserDto) {
