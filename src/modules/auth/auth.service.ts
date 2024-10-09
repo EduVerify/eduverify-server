@@ -103,7 +103,7 @@ export class AuthService {
       throw new BadRequestException('Email not found');
     }
     const token = this.generateJwt(user);
-    const url = `${FRONT_URL}reset-password?token=${token}`;
+    const url = `${FRONT_URL}?auth_status=reset-password&token=${token}`;
     await this.mailService.sendConfirmationEmail(user.email, url);
   }
 
