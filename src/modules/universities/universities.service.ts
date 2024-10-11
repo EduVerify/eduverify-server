@@ -18,6 +18,12 @@ export class UniversitiesService {
     );
   }
 
+  async checkUniversity(userId: number) {
+    return await this.universitiesRespository.exists({
+      where: { user: { id: userId } },
+    });
+  }
+
   findAll() {
     return `This action returns all universities`;
   }

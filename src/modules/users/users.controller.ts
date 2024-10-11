@@ -23,7 +23,6 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('/me')
-  @Roles(authType.STUDENT)
   getMe(@User() user: Users) {
     return this.usersService.getMe(user.id);
   }
@@ -40,6 +39,12 @@ export class UsersController {
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
     return this.usersService.updatePassword(user.id, updatePasswordDto);
+  }
+
+  @Put('switch-role')
+  @HttpCode(200)
+  async switchRole(@User() user: Users, @Body('role') role: authType) {
+    return await this.usersService.switchRole(user.id, role);
   }
 
   @Delete('/me')

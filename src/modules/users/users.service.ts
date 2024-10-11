@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { UpdatePasswordDto } from './dtos/update_password.dto';
 import { UniversitiesService } from '../universities/universities.service';
 import { CreateUniversityDto } from '../universities/dto/create-university.dto';
+import { authType } from 'src/types/enum';
 @Injectable()
 export class UsersService {
   constructor(
@@ -44,7 +45,10 @@ export class UsersService {
     });
   }
 
-  async createUniversity(createUniversityDto: CreateUniversityDto, user: Users) {
+  async createUniversity(
+    createUniversityDto: CreateUniversityDto,
+    user: Users,
+  ) {
     return await this.universitiesService.create(createUniversityDto, user);
   }
 
@@ -93,5 +97,15 @@ export class UsersService {
       10,
     );
     await this.usersRepository.update(id, { password: hashedPassword });
+  }
+
+  async switchRole(id: number, role: authType) {
+    await this.usersRepository.update(id, { role });
+    if (role === authType.SCHOOL) {
+      const checkUserSchool =
+        await this.universitiesService.checkUniversity(id);
+      return checkUserSchool;
+    }
+    return;
   }
 }

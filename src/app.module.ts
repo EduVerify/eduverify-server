@@ -9,6 +9,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { UniversitiesModule } from './modules/universities/universities.module';
+import { UploadModule } from './modules/upload/upload.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { UniversitiesModule } from './modules/universities/universities.module';
     AuthModule,
     UsersModule,
     UniversitiesModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -18,9 +18,6 @@ export class Universities {
   name: string;
 
   @Column({ nullable: true, type: 'varchar' })
-  country: string;
-
-  @Column({ nullable: true, type: 'varchar' })
   city: string;
 
   @Column({ nullable: true, type: 'varchar' })
@@ -47,7 +44,7 @@ export class Universities {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToOne(() => Users, { onDelete: 'CASCADE' })
+  @OneToOne(() => Users, { onDelete: 'CASCADE', eager: true })
   @JoinColumn()
   user: Users;
 }
