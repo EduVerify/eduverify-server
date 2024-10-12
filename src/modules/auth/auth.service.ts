@@ -8,6 +8,7 @@ import { MailService } from 'src/libs/mailer.service';
 import { FRONT_URL } from 'src/config/constants';
 import { UpdatePasswordDto } from '../users/dtos/update_password.dto';
 import { authType } from 'src/types/enum';
+import { access } from 'fs';
 
 @Injectable()
 export class AuthService {
@@ -129,5 +130,10 @@ export class AuthService {
 
   async resetPassword(updatePasswordDto: UpdatePasswordDto, id: number) {
     await this.usersService.updatePassword(id, updatePasswordDto);
+  }
+
+  async switchRole(id: number, role: authType) {
+    const { payload, isChecked } = await this.usersService.switchRole(id, role);
+    return { access_token: this.jwtService.sign(payload), isChecked };
   }
 }

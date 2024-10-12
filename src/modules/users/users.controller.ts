@@ -13,8 +13,6 @@ import { User } from 'src/decorators/user.decorator';
 import { Users } from 'src/entities/users.entity';
 import { UpdateUserDto } from './dtos/update_user.dto';
 import { UpdatePasswordDto } from './dtos/update_password.dto';
-import { Roles } from 'src/decorators/roles.decorator';
-import { authType } from 'src/types/enum';
 import { RolesGuard } from 'src/guards/roles.guard';
 
 @Controller('users')
@@ -39,12 +37,6 @@ export class UsersController {
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
     return this.usersService.updatePassword(user.id, updatePasswordDto);
-  }
-
-  @Put('switch-role')
-  @HttpCode(200)
-  async switchRole(@User() user: Users, @Body('role') role: authType) {
-    return await this.usersService.switchRole(user.id, role);
   }
 
   @Delete('/me')

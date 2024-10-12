@@ -25,11 +25,11 @@ export class UniversitiesController {
 
   @Post()
   @Roles(authType.SCHOOL)
-  create(
+  async create(
     @Body() createUniversityDto: CreateUniversityDto,
     @User() user: Users,
   ) {
-    return this.universitiesService.create(createUniversityDto, user);
+    return await this.universitiesService.create(createUniversityDto, user);
   }
 
   @Get()

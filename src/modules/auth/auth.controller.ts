@@ -19,6 +19,10 @@ import { Request, Response } from 'express';
 import { CreateUserDto } from '../users/dtos/create_user.dto';
 import { LocalAuthGuard } from 'src/guards/local-auth.guard';
 import { UpdatePasswordDto } from '../users/dtos/update_password.dto';
+import { User } from 'src/decorators/user.decorator';
+import { Users } from 'src/entities/users.entity';
+import { authType } from 'src/types/enum';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -53,6 +57,13 @@ export class AuthController {
     @Param('id') id: number,
   ) {
     return this.authService.resetPassword(updatePasswordDto, id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('switch-role')
+  @HttpCode(200)
+  async switchRole(@User() user: Users, @Body('role') role: authType) {
+    return await this.authService.switchRole(user.id, role);
   }
 
   @Get('google')

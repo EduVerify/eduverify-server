@@ -10,6 +10,7 @@ import { UpdatePasswordDto } from './dtos/update_password.dto';
 import { UniversitiesService } from '../universities/universities.service';
 import { CreateUniversityDto } from '../universities/dto/create-university.dto';
 import { authType } from 'src/types/enum';
+import { JwtPayload } from '../auth/jwt-payload.interface';
 @Injectable()
 export class UsersService {
   constructor(
@@ -100,12 +101,19 @@ export class UsersService {
   }
 
   async switchRole(id: number, role: authType) {
+    let isChecked = true;
     await this.usersRepository.update(id, { role });
     if (role === authType.SCHOOL) {
       const checkUserSchool =
         await this.universitiesService.checkUniversity(id);
-      return checkUserSchool;
+      isChecked = checkUserSchool;
     }
-    return;
+    const user = await this.usersRepository.findOne({ where: { id } });
+    const payload: JwtPayload = {
+      email: user.email,
+      id: user.id,
+      role: user.role,
+    };
+    return { payload, isChecked };
   }
 }
