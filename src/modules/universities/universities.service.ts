@@ -24,8 +24,10 @@ export class UniversitiesService {
     });
   }
 
-  findAll() {
-    return `This action returns all universities`;
+  async findAll() {
+    return await this.universitiesRespository.find({
+      select: ['id', 'name', 'city', 'phone', 'logo', 'website', 'description'],
+    });
   }
 
   findOne(id: number) {
