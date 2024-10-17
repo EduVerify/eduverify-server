@@ -3,11 +3,13 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Users } from './users.entity';
+import { Posts } from './posts.entity';
 
 @Entity('universities')
 export class Universities {
@@ -47,4 +49,7 @@ export class Universities {
   @OneToOne(() => Users, { onDelete: 'CASCADE', eager: true })
   @JoinColumn()
   user: Users;
+
+  @OneToMany(() => Posts, (post) => post.university)
+  posts: Posts[];
 }

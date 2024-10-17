@@ -31,14 +31,21 @@ export class UniversitiesService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} university`;
+    return this.universitiesRespository.findOneBy({ id });
+  }
+
+  findByUser(userId: number) {
+    return this.universitiesRespository.findOne({
+      where: { user: { id: userId } },
+      relations: ['user'],
+    });
   }
 
   update(id: number, updateUniversityDto: UpdateUniversityDto) {
-    return `This action updates a #${id} university`;
+    return this.universitiesRespository.update(id, updateUniversityDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} university`;
+    return this.universitiesRespository.delete(id);
   }
 }

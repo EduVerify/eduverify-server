@@ -10,6 +10,7 @@ import { UsersModule } from './modules/users/users.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { UniversitiesModule } from './modules/universities/universities.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { PostsModule } from './modules/posts/posts.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { UploadModule } from './modules/upload/upload.module';
     UsersModule,
     UniversitiesModule,
     UploadModule,
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
